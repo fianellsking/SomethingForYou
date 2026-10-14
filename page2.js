@@ -312,7 +312,7 @@ const scratchCanvas = $("#scratch-canvas");
 const scratchImg    = $("#scratch-reveal-img");
 const scratchFill   = $("#scratch-progress-fill");
 const btnScratchDone = $("#btn-scratch-done");
-const sctx          = scratchCanvas.getContext("2d", { willReadFrequently: true });
+const sctx          = scratchCanvas.getContext("2d");
 
 let scratching  = false;
 let scratchDone = false;
@@ -328,6 +328,45 @@ let opening = false;
 const SC_W = 340;
 const SC_H = 240;
 const SC_K = 1.5;      /* ความคมชัด: bitmap จริง = 510 x 360 */
+const SC_R = 23;       /* รัศมีแปรงขูด (พิกเซลตรรกะ) */
+
+/* ตั้งขนาด bitmap ครั้งเดียวเท่านั้น (ไม่ปรับขนาดซ้ำทีหลัง — Safari บนไอแพดมีบั๊กกับ canvas ที่ถูก resize) */
+scratchCanvas.width  = Math.round(SC_W * SC_K);
+scratchCanvas.height = Math.round(SC_H * SC_K);
+
+/* นับ % ที่ขูดจากตารางช่อง 10x10 แทนการอ่านพิกเซลกลับ (เบากว่า และไม่ติดข้อจำกัดของ Safari) */
+const SC_CELL  = 10;
+const SC_GX    = Math.ceil(SC_W / SC_CELL);
+const SC_GY    = Math.ceil(SC_H / SC_CELL);
+const scCells  = new Uint8Array(SC_GX * SC_GY);
+let   scCleared = 0;
+
+function markBrush(x, y) {
+    const x0 = Math.max(0, Math.floor((x - SC_R) / SC_CELL));
+    const x1 = Math.min(SC_GX - 1, Math.floor((x + SC_R) / SC_CELL));
+    const y0 = Math.max(0, Math.floor((y - SC_R) / SC_CELL));
+    const y1 = Math.min(SC_GY - 1, Math.floor((y + SC_R) / SC_CELL));
+
+    for (let gy = y0; gy <= y1; gy++) {
+        for (let gx = x0; gx <= x1; gx++) {
+            const cx = gx * SC_CELL + SC_CELL / 2 - x;
+            const cy = gy * SC_CELL + SC_CELL / 2 - y;
+            const i  = gy * SC_GX + gx;
+            if (!scCells[i] && cx * cx + cy * cy <= SC_R * SC_R) {
+                scCells[i] = 1;
+                scCleared++;
+            }
+        }
+    }
+}
+
+function markSegment(a, b) {
+    const d = Math.hypot(b.x - a.x, b.y - a.y);
+    const n = Math.max(1, Math.ceil(d / 6));
+    for (let k = 0; k <= n; k++) {
+        markBrush(a.x + (b.x - a.x) * k / n, a.y + (b.y - a.y) * k / n);
+    }
+}
 
 async function startScratch(i) {
 
@@ -368,13 +407,22 @@ function drawCover() {
     const w = SC_W;
     const h = SC_H;
 
-    scratchCanvas.style.width  = "";
-    scratchCanvas.style.height = "";
+    /* ล็อกขนาด/ตำแหน่งจาก JS เอง เผื่อ page2.css ในเครื่องเป็นเวอร์ชันเก่า (แคช) */
+    scratchCanvas.style.position = "absolute";
+    scratchCanvas.style.top      = "0";
+    scratchCanvas.style.left     = "0";
+    scratchCanvas.style.width    = "100%";
+    scratchCanvas.style.height   = "100%";
 
-    scratchCanvas.width  = Math.round(w * SC_K);
-    scratchCanvas.height = Math.round(h * SC_K);
-    sctx.setTransform(SC_K, 0, 0, SC_K, 0, 0);
+    /* ล้างของเดิมด้วย clearRect (ไม่ปรับขนาด canvas ซ้ำ) */
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
     sctx.globalCompositeOperation = "source-over";
+    sctx.globalAlpha = 1;
+    sctx.clearRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+    sctx.setTransform(SC_K, 0, 0, SC_K, 0, 0);
+
+    scCells.fill(0);
+    scCleared = 0;
 
     /* แผ่นปิดทับ: ไล่สีชมพู-ม่วง */
     const g = sctx.createLinearGradient(0, 0, w, h);
@@ -454,6 +502,8 @@ function scratchTo(p, first) {
     sctx.lineTo(p.x + (first ? 0.01 : 0), p.y);
     sctx.stroke();
 
+    markSegment(lastPt, p);
+
     lastPt = p;
 
     const now = performance.now();
@@ -481,7 +531,7 @@ function scratchTo(p, first) {
         FX.sound.tick();
     }
 
-    if (now - lastCheck > 220) {
+    if (now - lastCheck > 80) {
         lastCheck = now;
         checkScratchProgress();
     }
@@ -492,19 +542,7 @@ function checkScratchProgress() {
 
     if (scratchDone) return;
 
-    const w = scratchCanvas.width;
-    const h = scratchCanvas.height;
-    const px = sctx.getImageData(0, 0, w, h).data;
-
-    let clear = 0, seen = 0;
-
-    /* สุ่มเช็คแบบข้ามพิกเซลเพื่อประหยัดแรง */
-    for (let i = 3; i < px.length; i += 4 * 19) {
-        seen++;
-        if (px[i] === 0) clear++;
-    }
-
-    const percent = Math.round(clear / seen * 100);
+    const percent = scCleared / scCells.length * 100;
 
     scratchFill.style.width = Math.min(100, percent * (100 / SCRATCH_GOAL)) + "%";
 
