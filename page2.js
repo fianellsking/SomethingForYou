@@ -322,6 +322,18 @@ let lastBit     = 0;
 
 
 let opening = false;
+let drawnW  = 0;
+let drawnH  = 0;
+let touched = false;
+
+/* ถ้าขนาดกรอบเปลี่ยน (โมดัลเปิดเสร็จ / หมุนจอไอแพด) และยังไม่ได้ขูด ให้วาดแผ่นใหม่ให้พอดี */
+function refitScratch() {
+    if (!scratchModal.classList.contains("open") || scratchDone || touched) return;
+    if (scratchArea.clientWidth !== drawnW || scratchArea.clientHeight !== drawnH) drawCover();
+}
+
+window.addEventListener("resize", refitScratch);
+window.addEventListener("orientationchange", () => setTimeout(refitScratch, 300));
 
 async function startScratch(i) {
 
@@ -348,6 +360,9 @@ async function startScratch(i) {
     drawCover();
     scratchModal.classList.add("open");
 
+    /* เช็คอีกรอบหลังแอนิเมชันเปิดโมดัลจบ */
+    setTimeout(refitScratch, 650);
+
     opening = false;
 }
 
@@ -359,9 +374,17 @@ function drawCover() {
     scratchCanvas.style.opacity = "1";
     scratchCanvas.style.pointerEvents = "auto";
 
+    /* วัดจากกรอบแม่ (นิ่งกว่า canvas บน Safari/iPad) แล้วล็อกขนาด canvas เป็นพิกเซลตรง ๆ */
     const dpr = 1;
-    const w = scratchCanvas.offsetWidth;
-    const h = scratchCanvas.offsetHeight;
+    const w = scratchArea.clientWidth;
+    const h = scratchArea.clientHeight;
+
+    drawnW = w;
+    drawnH = h;
+    touched = false;
+
+    scratchCanvas.style.width  = w + "px";
+    scratchCanvas.style.height = h + "px";
 
     scratchCanvas.width  = w * dpr;
     scratchCanvas.height = h * dpr;
@@ -417,6 +440,7 @@ scratchCanvas.addEventListener("pointerdown", (e) => {
     if (scratchDone) return;
 
     scratching = true;
+    touched = true;
     scratchCanvas.setPointerCapture(e.pointerId);
     lastPt = canvasPoint(e);
     scratchTo(lastPt, true);
