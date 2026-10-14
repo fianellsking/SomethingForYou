@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fde7f1">
+    <title>Last Surprise 🎁</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Mali:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="fx.css">
+    <link rel="stylesheet" href="page5.css">
+
+    <script src="fx.js"></script>
+</head>
+<body>
+
+    <!-- ท้องฟ้ายามค่ำคืน (โผล่ตอนจบ) -->
+    <div class="night" id="night"></div>
+    <canvas id="fw-canvas"></canvas>
+
+    <main class="stage">
+
+        <!-- ===== ฉาก 1: กล่องของขวัญ ===== -->
+        <section class="scene active" id="scene-gift">
+
+            <h1 class="scene-title">ของขวัญชิ้นสุดท้าย 🎁</h1>
+            <p class="scene-sub" id="gift-sub">กดที่กล่องเพื่อเปิดดูนะ</p>
+
+            <div class="gift" id="gift" role="button" tabindex="0" aria-label="แตะเพื่อเปิดของขวัญ">
+                <div class="gift-rays" id="gift-rays"></div>
+                <div class="gift-lid" id="gift-lid">
+                    <div class="bow"><i></i><i></i></div>
+                </div>
+                <div class="gift-body"></div>
+                <div class="gift-shadow"></div>
+            </div>
+
+            <div class="tap-dots" id="tap-dots"><i></i><i></i><i></i></div>
+
+        </section>
+
+
+        <!-- ===== ฉาก 2: บัตรของขวัญ ===== -->
+        <section class="scene" id="scene-coupons">
+
+            <h1 class="scene-title">บัตรพิเศษจากพี่ต้า 🎟️</h1>
+            <p class="scene-sub" id="coupon-sub">แตะการ์ดเพื่อเปิดดู</p>
+
+            <div class="coupon-list" id="coupon-list"></div>
+
+            <div class="scene-actions" id="coupon-actions"></div>
+
+        </section>
+
+
+        <!-- ===== ฉาก 3: จบ ===== -->
+        <section class="scene" id="scene-finale">
+
+            <div class="finale-text">
+
+                <div class="f-line f-big" id="f1">สุขสันต์วันเกิดนะ 🎂</div>
+                <div class="f-line f-mid" id="f2">ขอบคุณที่อยู่ด้วยกันมาจนถึงวันนี้</div>
+
+                <div class="counter f-line" id="f3">
+                    <div class="counter-label">เราคบกันมาแล้ว</div>
+                    <div class="counter-grid">
+                        <div><b id="c-d">0</b><span>วัน</span></div>
+                        <div><b id="c-h">0</b><span>ชั่วโมง</span></div>
+                        <div><b id="c-m">0</b><span>นาที</span></div>
+                        <div><b id="c-s">0</b><span>วินาที</span></div>
+                    </div>
+                </div>
+
+                <div class="f-line f-mid" id="f4">และจะนับต่อไปเรื่อยๆ นะ ❤️</div>
+                <div class="f-line f-sign" id="f5">— ตาต้า</div>
+
+                <div class="f-line tap-note" id="f6">กดที่ท้องฟ้าเพื่อจุดพลุได้เลย ✨</div>
+
+                <div class="f-line scene-actions" id="f7">
+                    <button class="fx-btn ghost" id="btn-letter" type="button">💌 อ่านจดหมายอีกรอบ</button>
+                    <button class="fx-btn" id="btn-replay" type="button">🔁 ดูตั้งแต่ต้น</button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="page5.js"></script>
+</body>
+</html>

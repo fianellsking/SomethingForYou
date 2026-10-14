@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fde7f1">
+    <title>Make a Wish 🎂</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Mali:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="fx.css">
+    <link rel="stylesheet" href="page4.css">
+
+    <script src="fx.js"></script>
+</head>
+<body>
+
+    <!-- ความมืดตอนปิดไฟ -->
+    <div class="dim" id="dim"></div>
+
+    <!-- แสงวาบตอนเปิดไฟกลับ -->
+    <div class="flash" id="flash"></div>
+
+    <main class="stage" id="stage">
+
+        <!-- ข้อความด้านบน (เปลี่ยนตามขั้นตอน โดย page4.js) -->
+        <section class="copy" id="copy"></section>
+
+        <!-- เค้ก -->
+        <div class="cake-slot" id="cake-slot">
+            <div class="cake-scale" id="cake-scale">
+                <div class="cake" id="cake">
+
+                    <div class="cake-glow" id="cake-glow"></div>
+
+                    <div class="plate"></div>
+
+                    <div class="tier bottom">
+                        <div class="cream"></div>
+                        <div class="drips"></div>
+                        <div class="pearls"></div>
+                    </div>
+
+                    <div class="tier top">
+                        <div class="cream"></div>
+                        <div class="drips"></div>
+                        <div class="pearls"></div>
+                    </div>
+
+                    <!-- สตรอว์เบอร์รี -->
+                    <span class="berry" style="left: 26px;  bottom: 108px;"></span>
+                    <span class="berry" style="left: 52px;  bottom: 108px;"></span>
+                    <span class="berry" style="left: 262px; bottom: 108px;"></span>
+                    <span class="berry" style="left: 288px; bottom: 108px;"></span>
+
+                    <!-- เทียน สร้างโดย page4.js -->
+                    <div class="candles" id="candles"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ปุ่ม / ช่องกรอก (เปลี่ยนตามขั้นตอน) -->
+        <section class="controls" id="controls"></section>
+
+    </main>
+
+    <script src="page4.js"></script>
+</body>
+</html>

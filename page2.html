@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fce4ec">
+    <title>Love Journey - เส้นทางความทรงจำของเรา 💕</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Mali:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="fx.css">
+    <link rel="stylesheet" href="page2.css">
+
+    <script src="fx.js"></script>
+</head>
+<body>
+
+    <div class="main-wrapper">
+
+        <!-- หัวข้อหน้าเว็บ -->
+        <header class="journey-header">
+            <span class="sub-title">Chapter 02</span>
+            <h1 class="main-title">การเดินทางของเรา 🛤️✨</h1>
+            <p class="description">กดที่จุด Checkpoint เพื่อดูความทรงของเรากันนะคับบ🌸</p>
+
+            <div class="trail-progress">
+                <div class="trail-hearts" id="trail-hearts"></div>
+                <span id="trail-text">0 / 4 ความทรงจำ</span>
+            </div>
+        </header>
+
+        <!-- แผนที่การเดินทาง -->
+        <div class="map-container" id="map">
+
+            <!-- ของตกแต่งบนแผนที่ -->
+            <span class="deco" style="top: 5%;  left: 62%;">☁️</span>
+            <span class="deco" style="top: 26%; left: 6%;  animation-delay: -2s;">🌸</span>
+            <span class="deco" style="top: 54%; left: 88%; animation-delay: -4s;">✨</span>
+            <span class="deco" style="top: 60%; left: 8%;  animation-delay: -1s;">☁️</span>
+            <span class="deco" style="top: 80%; left: 90%; animation-delay: -3s;">🌷</span>
+            <span class="deco" style="top: 92%; left: 12%; animation-delay: -5s;">✨</span>
+
+            <!-- เส้นทาง: path ถูกสร้างโดย page2.js ให้พอดีกับขนาดจอ -->
+            <svg class="map-path-svg" id="route-svg" aria-hidden="true">
+                <defs>
+                    <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#ff7eb3"/>
+                        <stop offset="1" stop-color="#ab47bc"/>
+                    </linearGradient>
+                </defs>
+                <path id="route-base" class="route-base"/>
+                <path id="route-done" class="route-done"/>
+            </svg>
+
+            <!-- ตัวละครหัวใจที่เดินตามเส้นทาง -->
+            <div class="avatar" id="avatar"><span class="avatar-inner">💖</span></div>
+
+            <!-- จุด Checkpoint (ตำแหน่ง top/left เป็น % ของแผนที่) -->
+            <button class="checkpoint active" id="cp-0" data-i="0" style="top: 12%; left: 20%;">
+                <span class="cp-pulse"></span>
+                <span class="cp-dot">1</span>
+                <span class="cp-label">เดทแรกของเรา 🎬</span>
+            </button>
+
+            <button class="checkpoint locked" id="cp-1" data-i="1" style="top: 40%; left: 70%;">
+                <span class="cp-pulse"></span>
+                <span class="cp-dot">2</span>
+                <span class="cp-label">ของขวัญจากคนน่ารัก 💌</span>
+            </button>
+
+            <button class="checkpoint locked" id="cp-2" data-i="2" style="top: 70%; left: 30%;">
+                <span class="cp-pulse"></span>
+                <span class="cp-dot">3</span>
+                <span class="cp-label">ครั้งแรกของเราสอง 📸</span>
+            </button>
+
+            <button class="checkpoint locked" id="cp-3" data-i="3" style="top: 88%; left: 70%;">
+                <span class="cp-pulse"></span>
+                <span class="cp-dot">🎁</span>
+                <span class="cp-label">ทริปล่าสุดของเรา ✨</span>
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- 🪄 Modal การ์ดขูด -->
+    <div class="modal" id="scratch-modal">
+        <div class="card scratch-card">
+            <h3 class="scratch-title">ขูดการ์ดเพื่อปลดล็อคความทรงจำ ✨</h3>
+            <p class="scratch-desc">ใช้มือหรือเมาส์ถูบริเวณการ์ดเพื่อดูภาพที่ซ่อนอยู่</p>
+
+            <div class="scratch-area" id="scratch-area" data-nofx>
+                <img id="scratch-reveal-img" src="" alt="Secret Memory">
+                <canvas id="scratch-canvas"></canvas>
+            </div>
+
+            <div class="scratch-progress-bar">
+                <div class="scratch-progress-fill" id="scratch-progress-fill"></div>
+            </div>
+
+            <button id="btn-scratch-done" class="btn-continue" style="display: none;">
+                ปลดล็อคแล้ว! ดูอัลบั้มรูป 💕
+            </button>
+
+            <button class="btn-close-link" id="btn-scratch-close" type="button">ไว้ก่อน</button>
+        </div>
+    </div>
+
+
+    <!-- 🖼️ Modal อัลบั้มรูป -->
+    <div class="modal" id="album-modal">
+        <div class="card album-card">
+            <button class="modal-close-btn" id="btn-album-close" aria-label="ปิด">×</button>
+
+            <div class="polaroid" id="polaroid" data-nofx>
+                <div class="photo-frame">
+                    <img id="album-img" src="" alt="Memory Photo" draggable="false">
+                    <div class="photo-counter" id="photo-counter">1 / 1</div>
+                </div>
+            </div>
+
+            <p id="album-caption" class="album-caption"></p>
+
+            <div class="album-controls">
+                <button id="btn-prev" class="btn-nav">‹ ก่อนหน้า</button>
+                <button id="btn-next" class="btn-nav">ถัดไป ›</button>
+            </div>
+
+            <button id="btn-continue" class="btn-continue" style="display: none;">ออกเดินทางต่อ 🚀</button>
+        </div>
+    </div>
+
+    <script src="page2.js"></script>
+</body>
+</html>

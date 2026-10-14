@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fbe4ef">
+
+    <title>Our Special Space ❤️</title>
+
+    <!-- page1.css ไม่ต้องแก้ใด ๆ  /  fx.css ต้องมาหลัง page1.css -->
+    <link rel="stylesheet" href="page1.css">
+    <link rel="stylesheet" href="fx.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="fx.js"></script>
+</head>
+
+<body>
+
+    <!-- พื้นหลังหัวใจลอย -->
+    <canvas id="heart-canvas"></canvas>
+
+
+    <!-- 1. STORY SCREEN -->
+    <section id="story-screen" class="screen active">
+        <div class="story-content">
+
+            <div class="story-heart">❤️</div>
+
+            <div class="story-text-wrapper">
+                <div id="story-text" class="story-text"></div>
+                <span id="typing-cursor" class="typing-cursor">|</span>
+            </div>
+
+            <!-- จุดบอกความคืบหน้า (สร้างโดย page1.js) -->
+            <div id="story-dots" class="story-dots"></div>
+
+            <div id="tap-hint" class="tap-hint">แตะหน้าจอเพื่อไปต่อ</div>
+
+        </div>
+    </section>
+
+
+    <!-- 2. ADVENTURE POPUP -->
+    <div id="adventure-overlay" class="overlay hidden">
+        <div class="adventure-card">
+            <div class="adventure-decoration">✨</div>
+            <div class="big-heart">❤️</div>
+
+            <h1>พร้อมรึยัง</h1>
+
+            <h2>
+                ที่จะดูการผจญภัยของ<br>
+                คู่ที่รักกันที่สุดในโลก 💕
+            </h2>
+
+            <p class="adventure-description">ลองมาเปิดดูสิสุดที่รัก...</p>
+
+            <button id="start-adventure" class="main-button">ลุยเลยย ✨</button>
+        </div>
+    </div>
+
+
+    <!-- 3. LOADING SCREEN -->
+    <div id="loading-screen" class="overlay hidden">
+        <div class="loading-content">
+
+            <div class="loading-title">กำลังเปิดประตู...</div>
+
+            <div class="heart-loader">
+                <div class="loader-ring"></div>
+                <div class="loader-glow"></div>
+                <div class="loader-center">❤️</div>
+
+                <span class="sparkle sparkle-1">✦</span>
+                <span class="sparkle sparkle-2">✧</span>
+                <span class="sparkle sparkle-3">✦</span>
+                <span class="sparkle sparkle-4">✧</span>
+                <span class="sparkle sparkle-5">✦</span>
+                <span class="sparkle sparkle-6">✧</span>
+            </div>
+
+            <div id="loading-percent" class="loading-percent">0%</div>
+            <div id="loading-subtext" class="loading-subtext">กำลังเตรียมการผจญภัยของเรา...</div>
+
+        </div>
+    </div>
+
+
+    <!-- 4. BIRTHDAY PIN SCREEN -->
+    <div id="birthday-overlay" class="overlay hidden">
+        <div id="birthday-card" class="birthday-card">
+
+            <div class="birthday-top-heart">💗</div>
+            <div id="birthday-icon" class="birthday-icon">🎂</div>
+
+            <h1>เหมือนความรักจะตกหล่นไป...</h1>
+
+            <p class="birthday-main-text">น่าจะต้องใส่วันเกิดพี่ก่อนนะ 🤭</p>
+            <p class="birthday-sub-text">จำของพี่ด้ายอ้ะเป่าาา</p>
+
+            <div id="pin-dots" class="pin-dots">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+            </div>
+
+            <div id="pin-error" class="pin-error"></div>
+
+            <div id="pin-keypad" class="pin-keypad">
+                <button class="pin-key" data-key="1">1</button>
+                <button class="pin-key" data-key="2">2</button>
+                <button class="pin-key" data-key="3">3</button>
+
+                <button class="pin-key" data-key="4">4</button>
+                <button class="pin-key" data-key="5">5</button>
+                <button class="pin-key" data-key="6">6</button>
+
+                <button class="pin-key" data-key="7">7</button>
+                <button class="pin-key" data-key="8">8</button>
+                <button class="pin-key" data-key="9">9</button>
+
+                <div></div>
+                <button class="pin-key" data-key="0">0</button>
+                <button class="pin-key delete-key" data-key="delete">⌫</button>
+            </div>
+
+            <div id="pin-hint" class="pin-hint">ค.ศ. หรือ พ.ศ.ก็ด้ายน้า</div>
+
+        </div>
+    </div>
+
+
+    <!-- 5. SUCCESS SCREEN -->
+    <div id="success-screen" class="overlay hidden">
+        <div class="success-card">
+
+            <div class="success-stars">✦ ✧ ✦</div>
+            <div class="success-heart">💖</div>
+
+            <h1>ความรักที่ตกหล่นกลับมาแล้ว 🥰</h1>
+            <p>ความทรงจำถูกปลดล็อกแล้ว</p>
+
+            <div class="success-small">❤️ รับชมกับของขวัญของพี่น้า ❤️</div>
+            <div class="success-bar"><i></i></div>
+
+        </div>
+    </div>
+
+    <script src="page1.js"></script>
+</body>
+</html>
