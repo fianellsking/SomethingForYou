@@ -322,18 +322,12 @@ let lastBit     = 0;
 
 
 let opening = false;
-let drawnW  = 0;
-let drawnH  = 0;
-let touched = false;
-
-/* ถ้าขนาดกรอบเปลี่ยน (โมดัลเปิดเสร็จ / หมุนจอไอแพด) และยังไม่ได้ขูด ให้วาดแผ่นใหม่ให้พอดี */
-function refitScratch() {
-    if (!scratchModal.classList.contains("open") || scratchDone || touched) return;
-    if (scratchArea.clientWidth !== drawnW || scratchArea.clientHeight !== drawnH) drawCover();
-}
-
-window.addEventListener("resize", refitScratch);
-window.addEventListener("orientationchange", () => setTimeout(refitScratch, 300));
+/* ขนาดแผ่นขูดแบบตายตัว (หน่วย "พิกเซลตรรกะ") ไม่วัดจาก DOM เลย
+   เพราะ Safari บนไอแพดวัดขนาดตอนโมดัลกำลังเปิดแล้วได้ค่าเพี้ยน
+   canvas จะถูก CSS ขยายให้เต็มกรอบเอง (width/height: 100%) */
+const SC_W = 340;
+const SC_H = 240;
+const SC_K = 1.5;      /* ความคมชัด: bitmap จริง = 510 x 360 */
 
 async function startScratch(i) {
 
@@ -360,9 +354,6 @@ async function startScratch(i) {
     drawCover();
     scratchModal.classList.add("open");
 
-    /* เช็คอีกรอบหลังแอนิเมชันเปิดโมดัลจบ */
-    setTimeout(refitScratch, 650);
-
     opening = false;
 }
 
@@ -374,21 +365,15 @@ function drawCover() {
     scratchCanvas.style.opacity = "1";
     scratchCanvas.style.pointerEvents = "auto";
 
-    /* วัดจากกรอบแม่ (นิ่งกว่า canvas บน Safari/iPad) แล้วล็อกขนาด canvas เป็นพิกเซลตรง ๆ */
-    const dpr = 1;
-    const w = scratchArea.clientWidth;
-    const h = scratchArea.clientHeight;
+    const w = SC_W;
+    const h = SC_H;
 
-    drawnW = w;
-    drawnH = h;
-    touched = false;
+    scratchCanvas.style.width  = "";
+    scratchCanvas.style.height = "";
 
-    scratchCanvas.style.width  = w + "px";
-    scratchCanvas.style.height = h + "px";
-
-    scratchCanvas.width  = w * dpr;
-    scratchCanvas.height = h * dpr;
-    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    scratchCanvas.width  = Math.round(w * SC_K);
+    scratchCanvas.height = Math.round(h * SC_K);
+    sctx.setTransform(SC_K, 0, 0, SC_K, 0, 0);
     sctx.globalCompositeOperation = "source-over";
 
     /* แผ่นปิดทับ: ไล่สีชมพู-ม่วง */
@@ -431,7 +416,10 @@ function drawCover() {
 
 function canvasPoint(e) {
     const r = scratchCanvas.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
+    return {
+        x: (e.clientX - r.left) * (SC_W / r.width),
+        y: (e.clientY - r.top)  * (SC_H / r.height)
+    };
 }
 
 
@@ -440,7 +428,6 @@ scratchCanvas.addEventListener("pointerdown", (e) => {
     if (scratchDone) return;
 
     scratching = true;
-    touched = true;
     scratchCanvas.setPointerCapture(e.pointerId);
     lastPt = canvasPoint(e);
     scratchTo(lastPt, true);
@@ -478,8 +465,9 @@ function scratchTo(p, first) {
         const b = document.createElement("span");
         b.className = "scratch-bit";
         b.textContent = FX.pick(["✦", "✧", "✨"]);
-        b.style.left = (p.x + FX.rand(-14, 14)) + "px";
-        b.style.top  = (p.y + FX.rand(-14, 14)) + "px";
+        /* พิกัดตรรกะ -> พิกเซลจริงของกรอบ */
+        b.style.left = (p.x * scratchArea.clientWidth  / SC_W + FX.rand(-14, 14)) + "px";
+        b.style.top  = (p.y * scratchArea.clientHeight / SC_H + FX.rand(-14, 14)) + "px";
         scratchArea.appendChild(b);
 
         b.animate(
